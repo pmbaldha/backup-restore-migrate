@@ -2,7 +2,7 @@
 /**
  * Backblaze B2 storage handler
  */
-class BMR_Backblaze_Storage implements BMR_Storage_Interface {
+class BRM_Backblaze_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings
