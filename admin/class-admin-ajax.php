@@ -15,11 +15,13 @@ class BRM_Admin_Ajax {
 		}
 
 		$backup_type = isset( $_POST['backup_type'] ) ? sanitize_text_field( $_POST['backup_type'] ) : 'full';
+		$backup_label = isset( $_POST['backup_label'] ) ? sanitize_text_field( $_POST['backup_label'] ) : '';
 		$storage_destinations = isset( $_POST['storage_destinations'] ) ? array_map( 'sanitize_text_field', $_POST['storage_destinations'] ) : array( 'local' );
 
 		// Create backup
 		$backup_engine = new BRM_Backup_Engine( array(
 			'backup_type' => $backup_type,
+			'backup_label' => $backup_label,
 			'storage_destinations' => $storage_destinations,
 		) );
 

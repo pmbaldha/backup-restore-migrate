@@ -33,6 +33,9 @@ class BRM_Storage_Factory {
 			case 'dropbox':
 				return new BRM_Dropbox_Storage( $settings );
 
+			case 'onedrive':
+				return new BRM_OneDrive_Storage( $settings );
+
 			case 'google_cloud':
 				return new BRM_Google_Cloud_Storage( $settings );
 

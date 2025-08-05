@@ -19,6 +19,7 @@
         bindEvents: function() {
             // Create backup
             $(document).on('click', '.brm-create-backup', this.createBackup);
+            $(document).on('submit', '#brm-backup-form', this.submitBackupForm);
 
             // Restore backup
             $(document).on('click', '.brm-restore-backup', this.restoreBackup);
@@ -62,15 +63,51 @@
             var $button = $(this);
             var backupType = $button.data('type') || 'full';
 
-            // Show progress modal
-            WPBM.showProgressModal(wpbm.strings.creating_backup);
-
-            // Start backup
-            $.post(wpbm.ajax_url, {
+            // Show backup modal instead of immediately creating backup
+            WPBM.showBackupModal(backupType);
+        },
+        
+        /**
+         * Show backup modal
+         */
+        showBackupModal: function(backupType) {
+            var $modal = $('#brm-backup-modal');
+            var $form = $('#brm-backup-form');
+            
+            if ($form.length > 0) {
+                $form[0].reset();
+                $form.find('input[name="backup_type"][value="' + backupType + '"]').prop('checked', true);
+            }
+            
+            if ($modal.length > 0) {
+                $modal.fadeIn();
+            }
+        },
+        
+        /**
+         * Submit backup form
+         */
+        submitBackupForm: function(e) {
+            e.preventDefault();
+            
+            var $form = $(this);
+            var formData = $form.serializeArray();
+            var data = {
                 action: 'brm_create_backup',
-                nonce: wpbm.nonce,
-                backup_type: backupType
-            }, function(response) {
+                nonce: wpbm.nonce
+            };
+            
+            // Convert form data to object
+            $.each(formData, function(i, field) {
+                data[field.name] = field.value;
+            });
+            
+            // Close modal and show progress
+            $('#brm-backup-modal').fadeOut();
+            WPBM.showProgressModal(wpbm.strings.creating_backup);
+            
+            // Start backup
+            $.post(wpbm.ajax_url, data, function(response) {
                 if (response.success) {
                     // Start progress monitoring
                     WPBM.monitorProgress(response.backup_id, 'backup');

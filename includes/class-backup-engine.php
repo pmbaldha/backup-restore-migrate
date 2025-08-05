@@ -37,6 +37,7 @@ class BRM_Backup_Engine {
 	public function __construct( $options = array() ) {
 		$this->options = wp_parse_args( $options, array(
 			'backup_type' => 'full', // full, database, files
+			'backup_label' => '', // User-provided label
 			'incremental' => false,
 			'incremental_parent' => null,
 			'compression' => true,
@@ -60,7 +61,19 @@ class BRM_Backup_Engine {
 		$this->set_execution_limits();
 
 		// Create backup record
-		$backup_name = 'backup_' . substr( md5( time() . wp_rand() ), 0, 8 ) . '_' . date( 'Y-m-d_H-i-s' );
+		$random_string = substr( md5( time() . wp_rand() ), 0, 8 );
+		$timestamp = date( 'Y-m-d_H-i-s' );
+		
+		// Sanitize label for filename
+		if ( ! empty( $this->options['backup_label'] ) ) {
+			// Replace spaces with underscores and remove special characters
+			$label = preg_replace( '/[^a-zA-Z0-9_-]/', '', str_replace( ' ', '_', $this->options['backup_label'] ) );
+			// Limit label length to 50 characters
+			$label = substr( $label, 0, 50 );
+			$backup_name = 'backup_' . $label . '_' . $random_string . '_' . $timestamp;
+		} else {
+			$backup_name = 'backup_' . $random_string . '_' . $timestamp;
+		}
 		$wpdb->insert(
 			$wpdb->prefix . 'brm_backups',
 			array(

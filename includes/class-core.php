@@ -50,6 +50,7 @@ class BRM_Core {
 		require_once BRM_PLUGIN_DIR . 'includes/storage/class-s3-storage.php';
 		require_once BRM_PLUGIN_DIR . 'includes/storage/class-google-drive-storage.php';
 		require_once BRM_PLUGIN_DIR . 'includes/storage/class-dropbox-storage.php';
+		require_once BRM_PLUGIN_DIR . 'includes/storage/class-onedrive-storage.php';
 		require_once BRM_PLUGIN_DIR . 'includes/storage/class-google-cloud-storage.php';
 		require_once BRM_PLUGIN_DIR . 'includes/storage/class-backblaze-storage.php';
 

@@ -261,6 +261,85 @@ class BRM_Admin {
 					<div class="brm-progress-percentage">0%</div>
 				</div>
 			</div>
+
+			<!-- Backup Creation Modal -->
+			<div id="brm-backup-modal" class="brm-modal" style="display: none;">
+				<div class="brm-modal-content">
+					<span class="brm-modal-close">&times;</span>
+					<h2><?php esc_html_e( 'Create Backup', 'backup-restore-migrate' ); ?></h2>
+					
+					<form id="brm-backup-form">
+						<table class="form-table">
+							<tr>
+								<th><label for="backup_label"><?php esc_html_e( 'Backup Label', 'backup-restore-migrate' ); ?></label></th>
+								<td>
+									<input type="text" name="backup_label" id="backup_label" class="regular-text" placeholder="<?php esc_attr_e( 'e.g., Before plugin update', 'backup-restore-migrate' ); ?>">
+									<p class="description"><?php esc_html_e( 'Optional: Add a descriptive label to identify this backup', 'backup-restore-migrate' ); ?></p>
+								</td>
+							</tr>
+							<tr>
+								<th><?php esc_html_e( 'Backup Type', 'backup-restore-migrate' ); ?></th>
+								<td>
+									<label><input type="radio" name="backup_type" value="full" checked> <?php esc_html_e( 'Full Backup', 'backup-restore-migrate' ); ?></label><br>
+									<label><input type="radio" name="backup_type" value="database"> <?php esc_html_e( 'Database Only', 'backup-restore-migrate' ); ?></label><br>
+									<label><input type="radio" name="backup_type" value="files"> <?php esc_html_e( 'Files Only', 'backup-restore-migrate' ); ?></label>
+								</td>
+							</tr>
+							<tr>
+								<th><?php esc_html_e( 'Storage Destinations', 'backup-restore-migrate' ); ?></th>
+								<td>
+									<label><input type="checkbox" name="storage_destinations[]" value="local" checked> <?php esc_html_e( 'Local', 'backup-restore-migrate' ); ?></label><br>
+									<?php
+									$configured_storages = array();
+									$storage_options = array(
+										'ftp' => 'FTP',
+										's3' => 'Amazon S3',
+										'google_drive' => 'Google Drive',
+										'dropbox' => 'Dropbox',
+										'onedrive' => 'OneDrive',
+									);
+									
+									foreach ( $storage_options as $key => $label ) {
+										$settings = get_option( 'brm_storage_' . $key, array() );
+										// Check if storage is configured (has required credentials)
+										$is_configured = false;
+										switch ( $key ) {
+											case 'ftp':
+												$is_configured = ! empty( $settings['host'] ) && ! empty( $settings['username'] );
+												break;
+											case 's3':
+												$is_configured = ! empty( $settings['access_key'] ) && ! empty( $settings['secret_key'] );
+												break;
+											case 'google_drive':
+												$is_configured = ! empty( $settings['refresh_token'] );
+												break;
+											case 'dropbox':
+												$is_configured = ! empty( $settings['access_token'] );
+												break;
+											case 'onedrive':
+												$is_configured = ! empty( $settings['refresh_token'] );
+												break;
+										}
+										
+										if ( $is_configured ) {
+											?>
+											<label><input type="checkbox" name="storage_destinations[]" value="<?php echo esc_attr( $key ); ?>"> <?php echo esc_html( $label ); ?></label><br>
+											<?php
+										}
+									}
+									?>
+									<p class="description"><?php esc_html_e( 'Only configured storage options are shown', 'backup-restore-migrate' ); ?></p>
+								</td>
+							</tr>
+						</table>
+						
+						<p class="submit">
+							<button type="submit" class="button button-primary"><?php esc_html_e( 'Start Backup', 'backup-restore-migrate' ); ?></button>
+							<button type="button" class="button brm-modal-cancel"><?php esc_html_e( 'Cancel', 'backup-restore-migrate' ); ?></button>
+						</p>
+					</form>
+				</div>
+			</div>
 		</div>
 		<?php
 	}
@@ -514,7 +593,8 @@ class BRM_Admin {
 									<label><input type="checkbox" name="storage_destinations[]" value="ftp"> <?php esc_html_e( 'FTP', 'backup-restore-migrate' ); ?></label><br>
 									<label><input type="checkbox" name="storage_destinations[]" value="s3"> <?php esc_html_e( 'Amazon S3', 'backup-restore-migrate' ); ?></label><br>
 									<label><input type="checkbox" name="storage_destinations[]" value="google_drive"> <?php esc_html_e( 'Google Drive', 'backup-restore-migrate' ); ?></label><br>
-									<label><input type="checkbox" name="storage_destinations[]" value="dropbox"> <?php esc_html_e( 'Dropbox', 'backup-restore-migrate' ); ?></label>
+									<label><input type="checkbox" name="storage_destinations[]" value="dropbox"> <?php esc_html_e( 'Dropbox', 'backup-restore-migrate' ); ?></label><br>
+									<label><input type="checkbox" name="storage_destinations[]" value="onedrive"> <?php esc_html_e( 'OneDrive', 'backup-restore-migrate' ); ?></label>
 								</td>
 							</tr>
 
@@ -818,6 +898,7 @@ class BRM_Admin {
 							's3' => __( 'Amazon S3', 'backup-restore-migrate' ),
 							'google_drive' => __( 'Google Drive', 'backup-restore-migrate' ),
 							'dropbox' => __( 'Dropbox', 'backup-restore-migrate' ),
+							'onedrive' => __( 'OneDrive', 'backup-restore-migrate' ),
 							'google_cloud' => __( 'Google Cloud Storage', 'backup-restore-migrate' ),
 							'backblaze' => __( 'Backblaze B2', 'backup-restore-migrate' ),
 							'custom_s3' => __( 'Custom S3-Compatible', 'backup-restore-migrate' ),
