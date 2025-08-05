@@ -11,7 +11,7 @@ class BRM_Storage_Factory {
 	 * @return BRM_Storage_Interface|false
 	 */
 	public static function create( $type ) {
-		$settings = get_option( 'bmr_storage_' . $type, array() );
+		$settings = get_option( 'brm_storage_' . $type, array() );
 
 		switch ( $type ) {
 			case 'local':

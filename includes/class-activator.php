@@ -30,7 +30,7 @@ class BRM_Activator {
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Backups table
-		$table_backups = $wpdb->prefix . 'bmr_backups';
+		$table_backups = $wpdb->prefix . 'brm_backups';
 		$sql_backups = "CREATE TABLE $table_backups (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			backup_name varchar(255) NOT NULL,
@@ -50,7 +50,7 @@ class BRM_Activator {
 		) $charset_collate;";
 
 		// Backup schedules table
-		$table_schedules = $wpdb->prefix . 'bmr_schedules';
+		$table_schedules = $wpdb->prefix . 'brm_schedules';
 		$sql_schedules = "CREATE TABLE $table_schedules (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			schedule_name varchar(255) NOT NULL,
@@ -70,7 +70,7 @@ class BRM_Activator {
 		) $charset_collate;";
 
 		// Backup log table
-		$table_logs = $wpdb->prefix . 'bmr_logs';
+		$table_logs = $wpdb->prefix . 'brm_logs';
 		$sql_logs = "CREATE TABLE $table_logs (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			backup_id bigint(20),
@@ -88,7 +88,7 @@ class BRM_Activator {
 		dbDelta( $sql_schedules );
 		dbDelta( $sql_logs );
 
-		update_option( 'bmr_db_version', BRM_VERSION );
+		update_option( 'brm_db_version', BRM_VERSION );
 	}
 
 	/**
@@ -115,8 +115,8 @@ class BRM_Activator {
 		);
 
 		foreach ( $defaults as $key => $value ) {
-			if ( get_option( 'bmr_' . $key ) === false ) {
-				update_option( 'bmr_' . $key, $value );
+			if ( get_option( 'brm_' . $key ) === false ) {
+				update_option( 'brm_' . $key, $value );
 			}
 		}
 	}
@@ -144,12 +144,12 @@ class BRM_Activator {
 	 * Schedule cron events
 	 */
 	private static function schedule_events() {
-		if ( ! wp_next_scheduled( 'bmr_scheduled_backup' ) ) {
-			wp_schedule_event( time(), 'hourly', 'bmr_scheduled_backup' );
+		if ( ! wp_next_scheduled( 'brm_scheduled_backup' ) ) {
+			wp_schedule_event( time(), 'hourly', 'brm_scheduled_backup' );
 		}
 
-		if ( ! wp_next_scheduled( 'bmr_cleanup_old_backups' ) ) {
-			wp_schedule_event( time(), 'daily', 'bmr_cleanup_old_backups' );
+		if ( ! wp_next_scheduled( 'brm_cleanup_old_backups' ) ) {
+			wp_schedule_event( time(), 'daily', 'brm_cleanup_old_backups' );
 		}
 	}
 }

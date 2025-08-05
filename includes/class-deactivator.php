@@ -9,10 +9,10 @@ class BRM_Deactivator {
 	 */
 	public static function deactivate() {
 		// Clear scheduled events
-		wp_clear_scheduled_hook( 'bmr_scheduled_backup' );
-		wp_clear_scheduled_hook( 'bmr_cleanup_old_backups' );
+		wp_clear_scheduled_hook( 'brm_scheduled_backup' );
+		wp_clear_scheduled_hook( 'brm_cleanup_old_backups' );
 
 		// Clear any temporary data
-		delete_transient( 'bmr_running_backup' );
+		delete_transient( 'brm_running_backup' );
 	}
 }

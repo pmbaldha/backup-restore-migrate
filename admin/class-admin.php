@@ -40,7 +40,7 @@ class BRM_Admin {
 			__( 'Backups', 'backup-restore-migrate' ),
 			__( 'Backups', 'backup-restore-migrate' ),
 			'manage_options',
-			'bmr-backups',
+			'brm-backups',
 			array( $this, 'render_backups_page' )
 		);
 
@@ -49,7 +49,7 @@ class BRM_Admin {
 			__( 'Schedule', 'backup-restore-migrate' ),
 			__( 'Schedule', 'backup-restore-migrate' ),
 			'manage_options',
-			'bmr-schedule',
+			'brm-schedule',
 			array( $this, 'render_schedule_page' )
 		);
 
@@ -58,7 +58,7 @@ class BRM_Admin {
 			__( 'Migration', 'backup-restore-migrate' ),
 			__( 'Migration', 'backup-restore-migrate' ),
 			'manage_options',
-			'bmr-migration',
+			'brm-migration',
 			array( $this, 'render_migration_page' )
 		);
 
@@ -67,7 +67,7 @@ class BRM_Admin {
 			__( 'Settings', 'backup-restore-migrate' ),
 			__( 'Settings', 'backup-restore-migrate' ),
 			'manage_options',
-			'bmr-settings',
+			'brm-settings',
 			array( $this, 'render_settings_page' )
 		);
 	}
@@ -77,13 +77,13 @@ class BRM_Admin {
 	 */
 	public function enqueue_scripts( $hook ) {
 		// Only load on our plugin pages
-		if ( strpos( $hook, 'backup-restore-migrate' ) === false && strpos( $hook, 'wpbm-' ) === false ) {
+		if ( strpos( $hook, 'backup-restore-migrate' ) === false && strpos( $hook, 'brm-' ) === false ) {
 			return;
 		}
 
 		// Enqueue styles
 		wp_enqueue_style(
-			'wpbm-admin',
+			'brm-admin',
 			BRM_PLUGIN_URL . 'assets/css/admin.css',
 			array(),
 			BRM_VERSION
@@ -91,7 +91,7 @@ class BRM_Admin {
 
 		// Enqueue scripts
 		wp_enqueue_script(
-			'wpbm-admin',
+			'brm-admin',
 			BRM_PLUGIN_URL . 'assets/js/admin.js',
 			array( 'jquery', 'wp-util' ),
 			BRM_VERSION,
@@ -99,9 +99,9 @@ class BRM_Admin {
 		);
 
 		// Localize script
-		wp_localize_script( 'wpbm-admin', 'wpbm', array(
+		wp_localize_script( 'brm-admin', 'wpbm', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
-			'nonce' => wp_create_nonce( 'bmr_ajax' ),
+			'nonce' => wp_create_nonce( 'brm_ajax' ),
 			'strings' => array(
 				'confirm_delete' => __( 'Are you sure you want to delete this backup?', 'backup-restore-migrate' ),
 				'confirm_restore' => __( 'Are you sure you want to restore this backup? This will overwrite your current site!', 'backup-restore-migrate' ),
@@ -119,29 +119,29 @@ class BRM_Admin {
 		global $wpdb;
 
 		// Get statistics
-		$total_backups = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}bmr_backups WHERE status = 'completed'" );
-		$total_size = $wpdb->get_var( "SELECT SUM(backup_size) FROM {$wpdb->prefix}bmr_backups WHERE status = 'completed'" );
-		$last_backup = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}bmr_backups WHERE status = 'completed' ORDER BY created_at DESC LIMIT 1" );
-		$active_schedules = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}bmr_schedules WHERE is_active = 1" );
+		$total_backups = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}brm_backups WHERE status = 'completed'" );
+		$total_size = $wpdb->get_var( "SELECT SUM(backup_size) FROM {$wpdb->prefix}brm_backups WHERE status = 'completed'" );
+		$last_backup = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}brm_backups WHERE status = 'completed' ORDER BY created_at DESC LIMIT 1" );
+		$active_schedules = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}brm_schedules WHERE is_active = 1" );
 
 		?>
-		<div class="wrap wpbm-wrap">
+		<div class="wrap brm-wrap">
 			<h1><?php esc_html_e( 'Backup Restore Migrate Dashboard', 'backup-restore-migrate' ); ?></h1>
 
-			<div class="wpbm-dashboard">
+			<div class="brm-dashboard">
 				<!-- Quick Actions -->
-				<div class="wpbm-card">
+				<div class="brm-card">
 					<h2><?php esc_html_e( 'Quick Actions', 'backup-restore-migrate' ); ?></h2>
-					<div class="wpbm-actions">
-						<button class="button button-primary wpbm-create-backup" data-type="full">
+					<div class="brm-actions">
+						<button class="button button-primary brm-create-backup" data-type="full">
 							<span class="dashicons dashicons-backup"></span>
 							<?php esc_html_e( 'Full Backup', 'backup-restore-migrate' ); ?>
 						</button>
-						<button class="button wpbm-create-backup" data-type="database">
+						<button class="button brm-create-backup" data-type="database">
 							<span class="dashicons dashicons-database"></span>
 							<?php esc_html_e( 'Database Backup', 'backup-restore-migrate' ); ?>
 						</button>
-						<button class="button wpbm-create-backup" data-type="files">
+						<button class="button brm-create-backup" data-type="files">
 							<span class="dashicons dashicons-media-default"></span>
 							<?php esc_html_e( 'Files Backup', 'backup-restore-migrate' ); ?>
 						</button>
@@ -149,42 +149,42 @@ class BRM_Admin {
 				</div>
 
 				<!-- Statistics -->
-				<div class="wpbm-stats">
-					<div class="wpbm-stat-card">
-						<div class="wpbm-stat-icon">
+				<div class="brm-stats">
+					<div class="brm-stat-card">
+						<div class="brm-stat-icon">
 							<span class="dashicons dashicons-backup"></span>
 						</div>
-						<div class="wpbm-stat-content">
+						<div class="brm-stat-content">
 							<h3><?php echo esc_html( $total_backups ); ?></h3>
 							<p><?php esc_html_e( 'Total Backups', 'backup-restore-migrate' ); ?></p>
 						</div>
 					</div>
 
-					<div class="wpbm-stat-card">
-						<div class="wpbm-stat-icon">
+					<div class="brm-stat-card">
+						<div class="brm-stat-icon">
 							<span class="dashicons dashicons-admin-generic"></span>
 						</div>
-						<div class="wpbm-stat-content">
+						<div class="brm-stat-content">
 							<h3><?php echo esc_html( size_format( $total_size ?: 0 ) ); ?></h3>
 							<p><?php esc_html_e( 'Total Size', 'backup-restore-migrate' ); ?></p>
 						</div>
 					</div>
 
-					<div class="wpbm-stat-card">
-						<div class="wpbm-stat-icon">
+					<div class="brm-stat-card">
+						<div class="brm-stat-icon">
 							<span class="dashicons dashicons-calendar-alt"></span>
 						</div>
-						<div class="wpbm-stat-content">
+						<div class="brm-stat-content">
 							<h3><?php echo $last_backup ? esc_html( human_time_diff( strtotime( $last_backup->created_at ) ) ) : esc_html__( 'Never', 'backup-restore-migrate' ); ?></h3>
 							<p><?php esc_html_e( 'Last Backup', 'backup-restore-migrate' ); ?></p>
 						</div>
 					</div>
 
-					<div class="wpbm-stat-card">
-						<div class="wpbm-stat-icon">
+					<div class="brm-stat-card">
+						<div class="brm-stat-icon">
 							<span class="dashicons dashicons-clock"></span>
 						</div>
-						<div class="wpbm-stat-content">
+						<div class="brm-stat-content">
 							<h3><?php echo esc_html( $active_schedules ); ?></h3>
 							<p><?php esc_html_e( 'Active Schedules', 'backup-restore-migrate' ); ?></p>
 						</div>
@@ -192,10 +192,10 @@ class BRM_Admin {
 				</div>
 
 				<!-- Recent Backups -->
-				<div class="wpbm-card">
+				<div class="brm-card">
 					<h2><?php esc_html_e( 'Recent Backups', 'backup-restore-migrate' ); ?></h2>
 					<?php
-					$recent_backups = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}bmr_backups ORDER BY created_at DESC LIMIT 5" );
+					$recent_backups = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}brm_backups ORDER BY created_at DESC LIMIT 5" );
 
 					if ( $recent_backups ) {
 						?>
@@ -207,6 +207,7 @@ class BRM_Admin {
 								<th><?php esc_html_e( 'Size', 'backup-restore-migrate' ); ?></th>
 								<th><?php esc_html_e( 'Date', 'backup-restore-migrate' ); ?></th>
 								<th><?php esc_html_e( 'Status', 'backup-restore-migrate' ); ?></th>
+								<th><?php esc_html_e( 'Actions', 'backup-restore-migrate' ); ?></th>
 							</tr>
 							</thead>
 							<tbody>
@@ -217,15 +218,28 @@ class BRM_Admin {
 									<td><?php echo esc_html( size_format( $backup->backup_size ) ); ?></td>
 									<td><?php echo esc_html( human_time_diff( strtotime( $backup->created_at ) ) . ' ' . __( 'ago', 'backup-restore-migrate' ) ); ?></td>
 									<td>
-											<span class="wpbm-status wpbm-status-<?php echo esc_attr( $backup->status ); ?>">
+											<span class="brm-status brm-status-<?php echo esc_attr( $backup->status ); ?>">
 												<?php echo esc_html( ucfirst( $backup->status ) ); ?>
 											</span>
+									</td>
+									<td>
+										<?php if ( $backup->status === 'completed' ) : ?>
+											<a href="#" class="button button-small brm-download-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>" title="<?php esc_attr_e( 'Download', 'backup-restore-migrate' ); ?>">
+												<span class="dashicons dashicons-download"></span>
+											</a>
+											<a href="#" class="button button-small brm-restore-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>" title="<?php esc_attr_e( 'Restore', 'backup-restore-migrate' ); ?>">
+												<span class="dashicons dashicons-backup"></span>
+											</a>
+										<?php endif; ?>
+										<a href="#" class="button button-small brm-delete-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>" title="<?php esc_attr_e( 'Delete', 'backup-restore-migrate' ); ?>">
+											<span class="dashicons dashicons-trash"></span>
+										</a>
 									</td>
 								</tr>
 							<?php endforeach; ?>
 							</tbody>
 						</table>
-						<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=wpbm-backups' ) ); ?>" class="button"><?php esc_html_e( 'View All Backups', 'backup-restore-migrate' ); ?></a></p>
+						<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=brm-backups' ) ); ?>" class="button"><?php esc_html_e( 'View All Backups', 'backup-restore-migrate' ); ?></a></p>
 						<?php
 					} else {
 						?>
@@ -237,14 +251,14 @@ class BRM_Admin {
 			</div>
 
 			<!-- Progress Modal -->
-			<div id="wpbm-progress-modal" class="wpbm-modal" style="display: none;">
-				<div class="wpbm-modal-content">
-					<h2 class="wpbm-modal-title"></h2>
-					<div class="wpbm-progress-bar">
-						<div class="wpbm-progress-fill" style="width: 0%;"></div>
+			<div id="brm-progress-modal" class="brm-modal" style="display: none;">
+				<div class="brm-modal-content">
+					<h2 class="brm-modal-title"></h2>
+					<div class="brm-progress-bar">
+						<div class="brm-progress-fill" style="width: 0%;"></div>
 					</div>
-					<div class="wpbm-progress-message"></div>
-					<div class="wpbm-progress-percentage">0%</div>
+					<div class="brm-progress-message"></div>
+					<div class="brm-progress-percentage">0%</div>
 				</div>
 			</div>
 		</div>
@@ -259,7 +273,7 @@ class BRM_Admin {
 
 		// Handle bulk actions
 		if ( isset( $_POST['action'] ) && $_POST['action'] === 'delete' && ! empty( $_POST['backup_ids'] ) ) {
-			check_admin_referer( 'wpbm_bulk_action' );
+			check_admin_referer( 'brm_bulk_action' );
 
 			foreach ( $_POST['backup_ids'] as $backup_id ) {
 				$this->delete_backup( intval( $backup_id ) );
@@ -269,18 +283,18 @@ class BRM_Admin {
 		}
 
 		// Get backups
-		$backups = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpbm_backups ORDER BY created_at DESC" );
+		$backups = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}brm_backups ORDER BY created_at DESC" );
 
 		?>
-		<div class="wrap wpbm-wrap">
+		<div class="wrap brm-wrap">
 			<h1>
 				<?php esc_html_e( 'Backups', 'backup-restore-migrate' ); ?>
-				<a href="#" class="page-title-action wpbm-create-backup" data-type="full"><?php esc_html_e( 'Create New Backup', 'backup-restore-migrate' ); ?></a>
+				<a href="#" class="page-title-action brm-create-backup" data-type="full"><?php esc_html_e( 'Create New Backup', 'backup-restore-migrate' ); ?></a>
 			</h1>
 
 			<?php if ( $backups ) : ?>
 				<form method="post">
-					<?php wp_nonce_field( 'wpbm_bulk_action' ); ?>
+					<?php wp_nonce_field( 'brm_bulk_action' ); ?>
 
 					<div class="tablenav top">
 						<div class="alignleft actions bulkactions">
@@ -334,20 +348,20 @@ class BRM_Admin {
 								</td>
 								<td><?php echo esc_html( human_time_diff( strtotime( $backup->created_at ) ) . ' ' . __( 'ago', 'backup-restore-migrate' ) ); ?></td>
 								<td>
-										<span class="wpbm-status wpbm-status-<?php echo esc_attr( $backup->status ); ?>">
+										<span class="brm-status brm-status-<?php echo esc_attr( $backup->status ); ?>">
 											<?php echo esc_html( ucfirst( $backup->status ) ); ?>
 										</span>
 								</td>
 								<td>
 									<?php if ( $backup->status === 'completed' ) : ?>
-										<a href="#" class="button button-small wpbm-download-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>">
+										<a href="#" class="button button-small brm-download-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>">
 											<?php esc_html_e( 'Download', 'backup-restore-migrate' ); ?>
 										</a>
-										<a href="#" class="button button-small wpbm-restore-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>">
+										<a href="#" class="button button-small brm-restore-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>">
 											<?php esc_html_e( 'Restore', 'backup-restore-migrate' ); ?>
 										</a>
 									<?php endif; ?>
-									<a href="#" class="button button-small wpbm-delete-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>">
+									<a href="#" class="button button-small brm-delete-backup" data-backup-id="<?php echo esc_attr( $backup->id ); ?>">
 										<?php esc_html_e( 'Delete', 'backup-restore-migrate' ); ?>
 									</a>
 								</td>
@@ -370,13 +384,13 @@ class BRM_Admin {
 		global $wpdb;
 
 		// Get schedules
-		$schedules = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpbm_schedules ORDER BY schedule_name ASC" );
+		$schedules = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}brm_schedules ORDER BY schedule_name ASC" );
 
 		?>
-		<div class="wrap wpbm-wrap">
+		<div class="wrap brm-wrap">
 			<h1>
 				<?php esc_html_e( 'Backup Schedules', 'backup-restore-migrate' ); ?>
-				<a href="#" class="page-title-action wpbm-add-schedule"><?php esc_html_e( 'Add New Schedule', 'backup-restore-migrate' ); ?></a>
+				<a href="#" class="page-title-action brm-add-schedule"><?php esc_html_e( 'Add New Schedule', 'backup-restore-migrate' ); ?></a>
 			</h1>
 
 			<?php if ( $schedules ) : ?>
@@ -430,19 +444,19 @@ class BRM_Admin {
 							</td>
 							<td>
 								<?php if ( $schedule->is_active ) : ?>
-									<span class="wpbm-status wpbm-status-active"><?php esc_html_e( 'Active', 'backup-restore-migrate' ); ?></span>
+									<span class="brm-status brm-status-active"><?php esc_html_e( 'Active', 'backup-restore-migrate' ); ?></span>
 								<?php else : ?>
-									<span class="wpbm-status wpbm-status-inactive"><?php esc_html_e( 'Inactive', 'backup-restore-migrate' ); ?></span>
+									<span class="brm-status brm-status-inactive"><?php esc_html_e( 'Inactive', 'backup-restore-migrate' ); ?></span>
 								<?php endif; ?>
 							</td>
 							<td>
-								<a href="#" class="button button-small wpbm-edit-schedule" data-schedule-id="<?php echo esc_attr( $schedule->id ); ?>">
+								<a href="#" class="button button-small brm-edit-schedule" data-schedule-id="<?php echo esc_attr( $schedule->id ); ?>">
 									<?php esc_html_e( 'Edit', 'backup-restore-migrate' ); ?>
 								</a>
-								<a href="#" class="button button-small wpbm-toggle-schedule" data-schedule-id="<?php echo esc_attr( $schedule->id ); ?>" data-active="<?php echo esc_attr( $schedule->is_active ); ?>">
+								<a href="#" class="button button-small brm-toggle-schedule" data-schedule-id="<?php echo esc_attr( $schedule->id ); ?>" data-active="<?php echo esc_attr( $schedule->is_active ); ?>">
 									<?php echo $schedule->is_active ? esc_html__( 'Pause', 'backup-restore-migrate' ) : esc_html__( 'Resume', 'backup-restore-migrate' ); ?>
 								</a>
-								<a href="#" class="button button-small wpbm-delete-schedule" data-schedule-id="<?php echo esc_attr( $schedule->id ); ?>">
+								<a href="#" class="button button-small brm-delete-schedule" data-schedule-id="<?php echo esc_attr( $schedule->id ); ?>">
 									<?php esc_html_e( 'Delete', 'backup-restore-migrate' ); ?>
 								</a>
 							</td>
@@ -455,12 +469,12 @@ class BRM_Admin {
 			<?php endif; ?>
 
 			<!-- Schedule Modal -->
-			<div id="wpbm-schedule-modal" class="wpbm-modal" style="display: none;">
-				<div class="wpbm-modal-content">
-					<span class="wpbm-modal-close">&times;</span>
+			<div id="brm-schedule-modal" class="brm-modal" style="display: none;">
+				<div class="brm-modal-content">
+					<span class="brm-modal-close">&times;</span>
 					<h2><?php esc_html_e( 'Create Backup Schedule', 'backup-restore-migrate' ); ?></h2>
 
-					<form id="wpbm-schedule-form">
+					<form id="brm-schedule-form">
 						<input type="hidden" name="schedule_id" value="">
 
 						<table class="form-table">
@@ -523,7 +537,7 @@ class BRM_Admin {
 
 						<p class="submit">
 							<button type="submit" class="button button-primary"><?php esc_html_e( 'Save Schedule', 'backup-restore-migrate' ); ?></button>
-							<button type="button" class="button wpbm-modal-cancel"><?php esc_html_e( 'Cancel', 'backup-restore-migrate' ); ?></button>
+							<button type="button" class="button brm-modal-cancel"><?php esc_html_e( 'Cancel', 'backup-restore-migrate' ); ?></button>
 						</p>
 					</form>
 				</div>
@@ -537,16 +551,16 @@ class BRM_Admin {
 	 */
 	public function render_migration_page() {
 		?>
-		<div class="wrap wpbm-wrap">
+		<div class="wrap brm-wrap">
 			<h1><?php esc_html_e( 'Migration', 'backup-restore-migrate' ); ?></h1>
 
-			<div class="wpbm-migration-options">
+			<div class="brm-migration-options">
 				<!-- Export Section -->
-				<div class="wpbm-card">
+				<div class="brm-card">
 					<h2><?php esc_html_e( 'Export Site', 'backup-restore-migrate' ); ?></h2>
 					<p><?php esc_html_e( 'Create a migration package to move your site to another location.', 'backup-restore-migrate' ); ?></p>
 
-					<form id="bmr-export-form">
+					<form id="brm-export-form">
 						<table class="form-table">
 							<tr>
 								<th><?php esc_html_e( 'Export Options', 'backup-restore-migrate' ); ?></th>
@@ -567,11 +581,11 @@ class BRM_Admin {
 				</div>
 
 				<!-- Import Section -->
-				<div class="wpbm-card">
+				<div class="brm-card">
 					<h2><?php esc_html_e( 'Import Site', 'backup-restore-migrate' ); ?></h2>
 					<p><?php esc_html_e( 'Import a migration package from another site.', 'backup-restore-migrate' ); ?></p>
 
-					<form id="bmr-import-form">
+					<form id="brm-import-form">
 						<table class="form-table">
 							<tr>
 								<th><label for="migration_token"><?php esc_html_e( 'Migration Token', 'backup-restore-migrate' ); ?></label></th>
@@ -607,11 +621,11 @@ class BRM_Admin {
 				</div>
 
 				<!-- Clone Section -->
-				<div class="wpbm-card">
+				<div class="brm-card">
 					<h2><?php esc_html_e( 'Clone Site', 'backup-restore-migrate' ); ?></h2>
 					<p><?php esc_html_e( 'Create a clone of your site for staging or development.', 'backup-restore-migrate' ); ?></p>
 
-					<form id="bmr-clone-form">
+					<form id="brm-clone-form">
 						<table class="form-table">
 							<tr>
 								<th><label for="destination_url"><?php esc_html_e( 'Destination URL', 'backup-restore-migrate' ); ?></label></th>
@@ -657,64 +671,64 @@ class BRM_Admin {
 	 */
 	public function render_settings_page() {
 		// Save settings if submitted
-		if ( isset( $_POST['wpbm_save_settings'] ) ) {
-			check_admin_referer( 'wpbm_settings' );
+		if ( isset( $_POST['brm_save_settings'] ) ) {
+			check_admin_referer( 'brm_settings' );
 
 			// Save general settings
-			update_option( 'wpbm_backup_directory', sanitize_text_field( $_POST['backup_directory'] ) );
-			update_option( 'wpbm_max_execution_time', intval( $_POST['max_execution_time'] ) );
-			update_option( 'wpbm_memory_limit', sanitize_text_field( $_POST['memory_limit'] ) );
-			update_option( 'wpbm_chunk_size', intval( $_POST['chunk_size'] ) );
-			update_option( 'wpbm_compression_level', intval( $_POST['compression_level'] ) );
-			update_option( 'wpbm_email_notifications', isset( $_POST['email_notifications'] ) );
-			update_option( 'wpbm_notification_email', sanitize_email( $_POST['notification_email'] ) );
-			update_option( 'wpbm_retain_local_backups', intval( $_POST['retain_local_backups'] ) );
-			update_option( 'wpbm_enable_debug_log', isset( $_POST['enable_debug_log'] ) );
+			update_option( 'brm_backup_directory', sanitize_text_field( $_POST['backup_directory'] ) );
+			update_option( 'brm_max_execution_time', intval( $_POST['max_execution_time'] ) );
+			update_option( 'brm_memory_limit', sanitize_text_field( $_POST['memory_limit'] ) );
+			update_option( 'brm_chunk_size', intval( $_POST['chunk_size'] ) );
+			update_option( 'brm_compression_level', intval( $_POST['compression_level'] ) );
+			update_option( 'brm_email_notifications', isset( $_POST['email_notifications'] ) );
+			update_option( 'brm_notification_email', sanitize_email( $_POST['notification_email'] ) );
+			update_option( 'brm_retain_local_backups', intval( $_POST['retain_local_backups'] ) );
+			update_option( 'brm_enable_debug_log', isset( $_POST['enable_debug_log'] ) );
 
 			// Save exclude options
 			$exclude_tables = isset( $_POST['exclude_tables'] ) ? array_map( 'sanitize_text_field', $_POST['exclude_tables'] ) : array();
 			$exclude_files = isset( $_POST['exclude_files'] ) ? array_map( 'sanitize_text_field', explode( "\n", $_POST['exclude_files'] ) ) : array();
 
-			update_option( 'wpbm_exclude_tables', $exclude_tables );
-			update_option( 'wpbm_exclude_files', array_filter( $exclude_files ) );
+			update_option( 'brm_exclude_tables', $exclude_tables );
+			update_option( 'brm_exclude_files', array_filter( $exclude_files ) );
 
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Settings saved successfully.', 'backup-restore-migrate' ) . '</p></div>';
 		}
 
 		// Get current settings
-		$backup_directory = get_option( 'wpbm_backup_directory', 'backup-restore-migrate' );
-		$max_execution_time = get_option( 'wpbm_max_execution_time', 300 );
-		$memory_limit = get_option( 'wpbm_memory_limit', '256M' );
-		$chunk_size = get_option( 'wpbm_chunk_size', 2048 );
-		$compression_level = get_option( 'wpbm_compression_level', 5 );
-		$email_notifications = get_option( 'wpbm_email_notifications', true );
-		$notification_email = get_option( 'wpbm_notification_email', get_option( 'admin_email' ) );
-		$retain_local_backups = get_option( 'wpbm_retain_local_backups', 5 );
-		$enable_debug_log = get_option( 'wpbm_enable_debug_log', false );
-		$exclude_tables = get_option( 'wpbm_exclude_tables', array() );
-		$exclude_files = get_option( 'wpbm_exclude_files', array() );
+		$backup_directory = get_option( 'brm_backup_directory', 'backup-restore-migrate' );
+		$max_execution_time = get_option( 'brm_max_execution_time', 300 );
+		$memory_limit = get_option( 'brm_memory_limit', '256M' );
+		$chunk_size = get_option( 'brm_chunk_size', 2048 );
+		$compression_level = get_option( 'brm_compression_level', 5 );
+		$email_notifications = get_option( 'brm_email_notifications', true );
+		$notification_email = get_option( 'brm_notification_email', get_option( 'admin_email' ) );
+		$retain_local_backups = get_option( 'brm_retain_local_backups', 5 );
+		$enable_debug_log = get_option( 'brm_enable_debug_log', false );
+		$exclude_tables = get_option( 'brm_exclude_tables', array() );
+		$exclude_files = get_option( 'brm_exclude_files', array() );
 
 		// Get active tab
 		$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
 
 		?>
-		<div class="wrap wpbm-wrap">
+		<div class="wrap brm-wrap">
 			<h1><?php esc_html_e( 'Backup Migration Restore Settings', 'backup-restore-migrate' ); ?></h1>
 
 			<h2 class="nav-tab-wrapper">
-				<a href="?page=wpbm-settings&tab=general" class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
+				<a href="?page=brm-settings&tab=general" class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
 					<?php esc_html_e( 'General', 'backup-restore-migrate' ); ?>
 				</a>
-				<a href="?page=wpbm-settings&tab=storage" class="nav-tab <?php echo $active_tab === 'storage' ? 'nav-tab-active' : ''; ?>">
+				<a href="?page=brm-settings&tab=storage" class="nav-tab <?php echo $active_tab === 'storage' ? 'nav-tab-active' : ''; ?>">
 					<?php esc_html_e( 'Storage', 'backup-restore-migrate' ); ?>
 				</a>
-				<a href="?page=wpbm-settings&tab=exclude" class="nav-tab <?php echo $active_tab === 'exclude' ? 'nav-tab-active' : ''; ?>">
+				<a href="?page=brm-settings&tab=exclude" class="nav-tab <?php echo $active_tab === 'exclude' ? 'nav-tab-active' : ''; ?>">
 					<?php esc_html_e( 'Exclusions', 'backup-restore-migrate' ); ?>
 				</a>
 			</h2>
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'wpbm_settings' ); ?>
+				<?php wp_nonce_field( 'brm_settings' ); ?>
 
 				<?php if ( $active_tab === 'general' ) : ?>
 					<table class="form-table">
@@ -796,7 +810,7 @@ class BRM_Admin {
 					</table>
 
 				<?php elseif ( $active_tab === 'storage' ) : ?>
-					<div class="wpbm-storage-settings">
+					<div class="brm-storage-settings">
 						<?php
 						$storage_types = array(
 							'ftp' => __( 'FTP', 'backup-restore-migrate' ),
@@ -810,14 +824,14 @@ class BRM_Admin {
 						);
 
 						foreach ( $storage_types as $type => $label ) :
-							$settings = get_option( 'wpbm_storage_' . $type, array() );
+							$settings = get_option( 'brm_storage_' . $type, array() );
 							?>
-							<div class="wpbm-storage-type">
+							<div class="brm-storage-type">
 								<h3><?php echo esc_html( $label ); ?></h3>
-								<button type="button" class="button wpbm-configure-storage" data-storage-type="<?php echo esc_attr( $type ); ?>">
+								<button type="button" class="button brm-configure-storage" data-storage-type="<?php echo esc_attr( $type ); ?>">
 									<?php esc_html_e( 'Configure', 'backup-restore-migrate' ); ?>
 								</button>
-								<button type="button" class="button wpbm-test-storage" data-storage-type="<?php echo esc_attr( $type ); ?>">
+								<button type="button" class="button brm-test-storage" data-storage-type="<?php echo esc_attr( $type ); ?>">
 									<?php esc_html_e( 'Test Connection', 'backup-restore-migrate' ); ?>
 								</button>
 							</div>
@@ -856,16 +870,16 @@ class BRM_Admin {
 				<?php endif; ?>
 
 				<p class="submit">
-					<input type="submit" name="wpbm_save_settings" class="button-primary" value="<?php esc_attr_e( 'Save Settings', 'backup-restore-migrate' ); ?>" />
+					<input type="submit" name="brm_save_settings" class="button-primary" value="<?php esc_attr_e( 'Save Settings', 'backup-restore-migrate' ); ?>" />
 				</p>
 			</form>
 
 			<!-- Storage Configuration Modal -->
-			<div id="wpbm-storage-modal" class="wpbm-modal" style="display: none;">
-				<div class="wpbm-modal-content">
-					<span class="wpbm-modal-close">&times;</span>
-					<h2 class="wpbm-storage-modal-title"></h2>
-					<div class="wpbm-storage-modal-content"></div>
+			<div id="brm-storage-modal" class="brm-modal" style="display: none;">
+				<div class="brm-modal-content">
+					<span class="brm-modal-close">&times;</span>
+					<h2 class="brm-storage-modal-title"></h2>
+					<div class="brm-storage-modal-content"></div>
 				</div>
 			</div>
 		</div>
@@ -924,7 +938,7 @@ class BRM_Admin {
 
 		// Get backup details
 		$backup = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}bmr_backups WHERE id = %d",
+			"SELECT * FROM {$wpdb->prefix}brm_backups WHERE id = %d",
 			$backup_id
 		) );
 
@@ -951,13 +965,13 @@ class BRM_Admin {
 
 		// Delete database record
 		$wpdb->delete(
-			$wpdb->prefix . 'bmr_backups',
+			$wpdb->prefix . 'brm_backups',
 			array( 'id' => $backup_id )
 		);
 
 		// Delete related logs
 		$wpdb->delete(
-			$wpdb->prefix . 'bmr_logs',
+			$wpdb->prefix . 'brm_logs',
 			array( 'backup_id' => $backup_id )
 		);
 

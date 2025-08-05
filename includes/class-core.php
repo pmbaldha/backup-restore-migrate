@@ -91,17 +91,17 @@ class BRM_Core {
 			// AJAX handlers
 			$ajax = new BRM_Admin_Ajax();
 
-			add_action( 'wp_ajax_bmr_create_backup', array( $ajax, 'create_backup' ) );
-			add_action( 'wp_ajax_bmr_restore_backup', array( $ajax, 'restore_backup' ) );
-			add_action( 'wp_ajax_bmr_delete_backup', array( $ajax, 'delete_backup' ) );
-			add_action( 'wp_ajax_bmr_download_backup', array( $ajax, 'download_backup' ) );
-			add_action( 'wp_ajax_bmr_save_schedule', array( $ajax, 'save_schedule' ) );
-			add_action( 'wp_ajax_bmr_delete_schedule', array( $ajax, 'delete_schedule' ) );
-			add_action( 'wp_ajax_bmr_test_storage', array( $ajax, 'test_storage' ) );
-			add_action( 'wp_ajax_bmr_get_backup_progress', array( $ajax, 'get_backup_progress' ) );
-			add_action( 'wp_ajax_bmr_export_site', array( $ajax, 'export_site' ) );
-			add_action( 'wp_ajax_bmr_import_site', array( $ajax, 'import_site' ) );
-			add_action( 'wp_ajax_bmr_clone_site', array( $ajax, 'clone_site' ) );
+			add_action( 'wp_ajax_brm_create_backup', array( $ajax, 'create_backup' ) );
+			add_action( 'wp_ajax_brm_restore_backup', array( $ajax, 'restore_backup' ) );
+			add_action( 'wp_ajax_brm_delete_backup', array( $ajax, 'delete_backup' ) );
+			add_action( 'wp_ajax_brm_download_backup', array( $ajax, 'download_backup' ) );
+			add_action( 'wp_ajax_brm_save_schedule', array( $ajax, 'save_schedule' ) );
+			add_action( 'wp_ajax_brm_delete_schedule', array( $ajax, 'delete_schedule' ) );
+			add_action( 'wp_ajax_brm_test_storage', array( $ajax, 'test_storage' ) );
+			add_action( 'wp_ajax_brm_get_backup_progress', array( $ajax, 'get_backup_progress' ) );
+			add_action( 'wp_ajax_brm_export_site', array( $ajax, 'export_site' ) );
+			add_action( 'wp_ajax_brm_import_site', array( $ajax, 'import_site' ) );
+			add_action( 'wp_ajax_brm_clone_site', array( $ajax, 'clone_site' ) );
 		}
 	}
 
@@ -116,7 +116,7 @@ class BRM_Core {
 	 * Define cron hooks
 	 */
 	private function define_cron_hooks() {
-		add_action( 'bmr_scheduled_backup', array( 'BRM_Scheduler', 'run_scheduled_backups' ) );
-		add_action( 'bmr_cleanup_old_backups', array( 'BRM_Scheduler', 'cleanup_old_backups' ) );
+		add_action( 'brm_scheduled_backup', array( 'BRM_Scheduler', 'run_scheduled_backups' ) );
+		add_action( 'brm_cleanup_old_backups', array( 'BRM_Scheduler', 'cleanup_old_backups' ) );
 	}
 }

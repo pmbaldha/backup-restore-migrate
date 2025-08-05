@@ -43,7 +43,7 @@ class BRM_Restore_Engine {
 
 		// Get backup details
 		$backup = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}bmr_backups WHERE id = %d",
+			"SELECT * FROM {$wpdb->prefix}brm_backups WHERE id = %d",
 			$backup_id
 		) );
 
@@ -459,7 +459,7 @@ class BRM_Restore_Engine {
 		}
 
 		// Trigger action for third-party cache plugins
-		do_action( 'bmr_clear_caches' );
+		do_action( 'brm_clear_caches' );
 	}
 
 	/**
@@ -471,13 +471,13 @@ class BRM_Restore_Engine {
 		$this->progress['message'] = $message;
 
 		// Save to transient for AJAX polling
-		set_transient( 'bmr_restore_progress_' . $this->restore_id, $this->progress, 300 );
+		set_transient( 'brm_restore_progress_' . $this->restore_id, $this->progress, 300 );
 	}
 
 	/**
 	 * Get progress
 	 */
 	public function get_progress() {
-		return get_transient( 'bmr_restore_progress_' . $this->restore_id );
+		return get_transient( 'brm_restore_progress_' . $this->restore_id );
 	}
 }

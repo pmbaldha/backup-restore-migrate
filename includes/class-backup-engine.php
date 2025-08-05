@@ -60,9 +60,9 @@ class BRM_Backup_Engine {
 		$this->set_execution_limits();
 
 		// Create backup record
-		$backup_name = 'backup_' . date( 'Y-m-d_H-i-s' );
+		$backup_name = 'backup_' . substr( md5( time() . wp_rand() ), 0, 8 ) . '_' . date( 'Y-m-d_H-i-s' );
 		$wpdb->insert(
-			$wpdb->prefix . 'wpbm_backups',
+			$wpdb->prefix . 'brm_backups',
 			array(
 				'backup_name' => $backup_name,
 				'backup_type' => $this->options['backup_type'],
@@ -104,7 +104,7 @@ class BRM_Backup_Engine {
 
 			// Update backup record
 			$wpdb->update(
-				$wpdb->prefix . 'wpbm_backups',
+				$wpdb->prefix . 'brm_backups',
 				array(
 					'status' => 'completed',
 					'backup_size' => filesize( $archive_path ),
@@ -135,7 +135,7 @@ class BRM_Backup_Engine {
 
 			// Update backup record
 			$wpdb->update(
-				$wpdb->prefix . 'wpbm_backups',
+				$wpdb->prefix . 'brm_backups',
 				array(
 					'status' => 'failed',
 					'completed_at' => current_time( 'mysql' ),
@@ -163,8 +163,8 @@ class BRM_Backup_Engine {
 	 * Set execution limits
 	 */
 	private function set_execution_limits() {
-		@set_time_limit( get_option( 'wpbm_max_execution_time', 300 ) );
-		@ini_set( 'memory_limit', get_option( 'wpbm_memory_limit', '256M' ) );
+		@set_time_limit( get_option( 'brm_max_execution_time', 300 ) );
+		@ini_set( 'memory_limit', get_option( 'brm_memory_limit', '256M' ) );
 	}
 
 	/**
@@ -357,7 +357,7 @@ class BRM_Backup_Engine {
 
 		// Get parent backup date
 		$parent_backup = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}wpbm_backups WHERE id = %d",
+			"SELECT * FROM {$wpdb->prefix}brm_backups WHERE id = %d",
 			$this->options['incremental_parent']
 		) );
 
@@ -410,7 +410,7 @@ class BRM_Backup_Engine {
 			'Thumbs.db',
 		);
 
-		$user_excludes = get_option( 'wpbm_exclude_files', array() );
+		$user_excludes = get_option( 'brm_exclude_files', array() );
 
 		return array_merge( $default_excludes, $user_excludes, $this->options['exclude_files'] );
 	}
@@ -577,18 +577,18 @@ class BRM_Backup_Engine {
 		$this->progress['current_file'] = $current_file;
 
 		// Save to transient for AJAX polling
-		set_transient( 'wpbm_backup_progress_' . $this->backup_id, $this->progress, 300 );
+		set_transient( 'brm_backup_progress_' . $this->backup_id, $this->progress, 300 );
 	}
 
 	/**
 	 * Send notification
 	 */
 	private function send_notification( $status, $error_message = '' ) {
-		if ( ! get_option( 'wpbm_email_notifications', true ) ) {
+		if ( ! get_option( 'brm_email_notifications', true ) ) {
 			return;
 		}
 
-		$to = get_option( 'wpbm_notification_email', get_option( 'admin_email' ) );
+		$to = get_option( 'brm_notification_email', get_option( 'admin_email' ) );
 		$subject = sprintf(
 			'[%s] %s',
 			get_bloginfo( 'name' ),

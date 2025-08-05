@@ -358,7 +358,7 @@ class BRM_Dropbox_Storage implements BRM_Storage_Interface {
 		$params = array(
 			'response_type' => 'code',
 			'client_id' => $this->settings['app_key'],
-			'redirect_uri' => admin_url( 'admin.php?page=bmr-settings&tab=storage&type=dropbox' ),
+			'redirect_uri' => admin_url( 'admin.php?page=brm-settings&tab=storage&type=dropbox' ),
 		);
 
 		return 'https://www.dropbox.com/oauth2/authorize?' . http_build_query( $params );
@@ -376,7 +376,7 @@ class BRM_Dropbox_Storage implements BRM_Storage_Interface {
 					'grant_type' => 'authorization_code',
 					'client_id' => $this->settings['app_key'],
 					'client_secret' => $this->settings['app_secret'],
-					'redirect_uri' => admin_url( 'admin.php?page=bmr-settings&tab=storage&type=dropbox' ),
+					'redirect_uri' => admin_url( 'admin.php?page=brm-settings&tab=storage&type=dropbox' ),
 				),
 			)
 		);
@@ -386,7 +386,7 @@ class BRM_Dropbox_Storage implements BRM_Storage_Interface {
 
 			if ( isset( $body['access_token'] ) ) {
 				$this->settings['access_token'] = $body['access_token'];
-				update_option( 'bmr_storage_dropbox', $this->settings );
+				update_option( 'brm_storage_dropbox', $this->settings );
 				return true;
 			}
 		}

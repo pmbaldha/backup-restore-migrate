@@ -18,39 +18,39 @@
          */
         bindEvents: function() {
             // Create backup
-            $(document).on('click', '.wpbm-create-backup', this.createBackup);
+            $(document).on('click', '.brm-create-backup', this.createBackup);
 
             // Restore backup
-            $(document).on('click', '.wpbm-restore-backup', this.restoreBackup);
+            $(document).on('click', '.brm-restore-backup', this.restoreBackup);
 
             // Delete backup
-            $(document).on('click', '.wpbm-delete-backup', this.deleteBackup);
+            $(document).on('click', '.brm-delete-backup', this.deleteBackup);
 
             // Download backup
-            $(document).on('click', '.wpbm-download-backup', this.downloadBackup);
+            $(document).on('click', '.brm-download-backup', this.downloadBackup);
 
             // Schedule modal
-            $(document).on('click', '.wpbm-add-schedule', this.openScheduleModal);
-            $(document).on('click', '.wpbm-edit-schedule', this.editSchedule);
-            $(document).on('submit', '#wpbm-schedule-form', this.saveSchedule);
+            $(document).on('click', '.brm-add-schedule', this.openScheduleModal);
+            $(document).on('click', '.brm-edit-schedule', this.editSchedule);
+            $(document).on('submit', '#brm-schedule-form', this.saveSchedule);
 
             // Delete schedule
-            $(document).on('click', '.wpbm-delete-schedule', this.deleteSchedule);
+            $(document).on('click', '.brm-delete-schedule', this.deleteSchedule);
 
             // Toggle schedule
-            $(document).on('click', '.wpbm-toggle-schedule', this.toggleSchedule);
+            $(document).on('click', '.brm-toggle-schedule', this.toggleSchedule);
 
             // Storage configuration
-            $(document).on('click', '.wpbm-configure-storage', this.configureStorage);
-            $(document).on('click', '.wpbm-test-storage', this.testStorage);
+            $(document).on('click', '.brm-configure-storage', this.configureStorage);
+            $(document).on('click', '.brm-test-storage', this.testStorage);
 
             // Modal controls
-            $(document).on('click', '.wpbm-modal-close, .wpbm-modal-cancel', this.closeModal);
+            $(document).on('click', '.brm-modal-close, .brm-modal-cancel', this.closeModal);
 
             // Migration forms
-            $(document).on('submit', '#wpbm-export-form', this.exportSite);
-            $(document).on('submit', '#wpbm-import-form', this.importSite);
-            $(document).on('submit', '#wpbm-clone-form', this.cloneSite);
+            $(document).on('submit', '#brm-export-form', this.exportSite);
+            $(document).on('submit', '#brm-import-form', this.importSite);
+            $(document).on('submit', '#brm-clone-form', this.cloneSite);
         },
 
         /**
@@ -67,7 +67,7 @@
 
             // Start backup
             $.post(wpbm.ajax_url, {
-                action: 'bmr_create_backup',
+                action: 'brm_create_backup',
                 nonce: wpbm.nonce,
                 backup_type: backupType
             }, function(response) {
@@ -87,7 +87,7 @@
         monitorProgress: function(id, type) {
             var progressInterval = setInterval(function() {
                 $.post(wpbm.ajax_url, {
-                    action: 'bmr_get_' + type + '_progress',
+                    action: 'brm_get_' + type + '_progress',
                     nonce: wpbm.nonce,
                     backup_id: id
                 }, function(response) {
@@ -95,9 +95,9 @@
                         var progress = response.data;
 
                         // Update progress bar
-                        $('.wpbm-progress-fill').css('width', progress.percentage + '%');
-                        $('.wpbm-progress-percentage').text(progress.percentage + '%');
-                        $('.wpbm-progress-message').text(progress.message);
+                        $('.brm-progress-fill').css('width', progress.percentage + '%');
+                        $('.brm-progress-percentage').text(progress.percentage + '%');
+                        $('.brm-progress-message').text(progress.message);
 
                         // Check if completed
                         if (progress.status === 'completed' || progress.status === 'failed') {
@@ -136,7 +136,7 @@
 
             // Start restore
             $.post(wpbm.ajax_url, {
-                action: 'bmr_restore_backup',
+                action: 'brm_restore_backup',
                 nonce: wpbm.nonce,
                 backup_id: backupId,
                 create_restore_point: 1,
@@ -169,7 +169,7 @@
             $button.prop('disabled', true);
 
             $.post(wpbm.ajax_url, {
-                action: 'bmr_delete_backup',
+                action: 'brm_delete_backup',
                 nonce: wpbm.nonce,
                 backup_id: backupId
             }, function(response) {
@@ -192,7 +192,7 @@
 
             var backupId = $(this).data('backup-id');
 
-            window.location.href = wpbm.ajax_url + '?action=bmr_download_backup&nonce=' + wpbm.nonce + '&backup_id=' + backupId;
+            window.location.href = wpbm.ajax_url + '?action=brm_download_backup&nonce=' + wpbm.nonce + '&backup_id=' + backupId;
         },
 
         /**
@@ -201,9 +201,17 @@
         openScheduleModal: function(e) {
             e.preventDefault();
 
-            $('#wpbm-schedule-form')[0].reset();
-            $('#wpbm-schedule-form input[name="schedule_id"]').val('');
-            $('#wpbm-schedule-modal').show();
+            var $form = $('#brm-schedule-form');
+            var $modal = $('#brm-schedule-modal');
+            
+            if ($form.length > 0) {
+                $form[0].reset();
+                $form.find('input[name="schedule_id"]').val('');
+            }
+            
+            if ($modal.length > 0) {
+                $modal.fadeIn();
+            }
         },
 
         /**
@@ -215,7 +223,7 @@
             var scheduleId = $(this).data('schedule-id');
 
             // Load schedule data (implement as needed)
-            $('#wpbm-schedule-modal').show();
+            $('#brm-schedule-modal').show();
         },
 
         /**
@@ -226,7 +234,7 @@
 
             var formData = $(this).serialize();
 
-            $.post(wpbm.ajax_url, formData + '&action=bmr_save_schedule&nonce=' + wpbm.nonce, function(response) {
+            $.post(wpbm.ajax_url, formData + '&action=brm_save_schedule&nonce=' + wpbm.nonce, function(response) {
                 if (response.success) {
                     alert(response.data);
                     location.reload();
@@ -250,7 +258,7 @@
             var scheduleId = $button.data('schedule-id');
 
             $.post(wpbm.ajax_url, {
-                action: 'bmr_delete_schedule',
+                action: 'brm_delete_schedule',
                 nonce: wpbm.nonce,
                 schedule_id: scheduleId
             }, function(response) {
@@ -286,7 +294,7 @@
             var storageType = $(this).data('storage-type');
 
             // Load storage configuration form
-            $('#wpbm-storage-modal').show();
+            $('#brm-storage-modal').show();
         },
 
         /**
@@ -301,7 +309,7 @@
             $button.prop('disabled', true).text('Testing...');
 
             $.post(wpbm.ajax_url, {
-                action: 'bmr_test_storage',
+                action: 'brm_test_storage',
                 nonce: wpbm.nonce,
                 storage_type: storageType
             }, function(response) {
@@ -325,7 +333,7 @@
 
             WPBM.showProgressModal('Creating migration package...');
 
-            $.post(wpbm.ajax_url, formData + '&action=bmr_export_site&nonce=' + wpbm.nonce, function(response) {
+            $.post(wpbm.ajax_url, formData + '&action=brm_export_site&nonce=' + wpbm.nonce, function(response) {
                 WPBM.hideProgressModal();
 
                 if (response.success) {
@@ -351,7 +359,7 @@
 
             WPBM.showProgressModal('Importing site...');
 
-            $.post(wpbm.ajax_url, formData + '&action=bmr_import_site&nonce=' + wpbm.nonce, function(response) {
+            $.post(wpbm.ajax_url, formData + '&action=brm_import_site&nonce=' + wpbm.nonce, function(response) {
                 WPBM.hideProgressModal();
 
                 if (response.success) {
@@ -373,7 +381,7 @@
 
             WPBM.showProgressModal('Creating clone...');
 
-            $.post(wpbm.ajax_url, formData + '&action=bmr_clone_site&nonce=' + wpbm.nonce, function(response) {
+            $.post(wpbm.ajax_url, formData + '&action=brm_clone_site&nonce=' + wpbm.nonce, function(response) {
                 WPBM.hideProgressModal();
 
                 if (response.success) {
@@ -389,25 +397,35 @@
          * Show progress modal
          */
         showProgressModal: function(title) {
-            $('#wpbm-progress-modal .wpbm-modal-title').text(title);
-            $('#wpbm-progress-modal .wpbm-progress-fill').css('width', '0%');
-            $('#wpbm-progress-modal .wpbm-progress-percentage').text('0%');
-            $('#wpbm-progress-modal .wpbm-progress-message').text('Initializing...');
-            $('#wpbm-progress-modal').show();
+            $('#brm-progress-modal .brm-modal-title').text(title);
+            $('#brm-progress-modal .brm-progress-fill').css('width', '0%');
+            $('#brm-progress-modal .brm-progress-percentage').text('0%');
+            $('#brm-progress-modal .brm-progress-message').text('Initializing...');
+            $('#brm-progress-modal').show();
         },
 
         /**
          * Hide progress modal
          */
         hideProgressModal: function() {
-            $('#wpbm-progress-modal').hide();
+            $('#brm-progress-modal').hide();
         },
 
         /**
          * Close modal
          */
-        closeModal: function() {
-            $(this).closest('.wpbm-modal').hide();
+        closeModal: function(e) {
+            if (e) {
+                e.preventDefault();
+            }
+            
+            var $modal = $(this).closest('.brm-modal');
+            if ($modal.length > 0) {
+                $modal.css('display', 'none');
+            } else {
+                // If clicked on close button, find parent modal differently
+                $('.brm-modal:visible').css('display', 'none');
+            }
         }
     };
 

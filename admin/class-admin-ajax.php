@@ -8,7 +8,7 @@ class BRM_Admin_Ajax {
 	 * Create backup
 	 */
 	public function create_backup() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -32,7 +32,7 @@ class BRM_Admin_Ajax {
 	 * Get backup progress
 	 */
 	public function get_backup_progress() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -44,7 +44,7 @@ class BRM_Admin_Ajax {
 			wp_send_json_error( __( 'Invalid backup ID', 'backup-restore-migrate' ) );
 		}
 
-		$progress = get_transient( 'bmr_backup_progress_' . $backup_id );
+		$progress = get_transient( 'brm_backup_progress_' . $backup_id );
 
 		if ( $progress ) {
 			wp_send_json_success( $progress );
@@ -57,7 +57,7 @@ class BRM_Admin_Ajax {
 	 * Restore backup
 	 */
 	public function restore_backup() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -85,7 +85,7 @@ class BRM_Admin_Ajax {
 	 * Delete backup
 	 */
 	public function delete_backup() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -101,7 +101,7 @@ class BRM_Admin_Ajax {
 
 		// Get backup details
 		$backup = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}bmr_backups WHERE id = %d",
+			"SELECT * FROM {$wpdb->prefix}brm_backups WHERE id = %d",
 			$backup_id
 		) );
 
@@ -127,7 +127,7 @@ class BRM_Admin_Ajax {
 
 		// Delete database record
 		$wpdb->delete(
-			$wpdb->prefix . 'bmr_backups',
+			$wpdb->prefix . 'brm_backups',
 			array( 'id' => $backup_id )
 		);
 
@@ -138,7 +138,7 @@ class BRM_Admin_Ajax {
 	 * Download backup
 	 */
 	public function download_backup() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -154,7 +154,7 @@ class BRM_Admin_Ajax {
 
 		// Get backup details
 		$backup = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}bmr_backups WHERE id = %d",
+			"SELECT * FROM {$wpdb->prefix}brm_backups WHERE id = %d",
 			$backup_id
 		) );
 
@@ -216,7 +216,7 @@ class BRM_Admin_Ajax {
 	 * Save schedule
 	 */
 	public function save_schedule() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -249,7 +249,7 @@ class BRM_Admin_Ajax {
 		if ( $schedule_id ) {
 			// Update existing schedule
 			$wpdb->update(
-				$wpdb->prefix . 'bmr_schedules',
+				$wpdb->prefix . 'brm_schedules',
 				$data,
 				array( 'id' => $schedule_id )
 			);
@@ -259,7 +259,7 @@ class BRM_Admin_Ajax {
 			$data['is_active'] = 1;
 
 			$wpdb->insert(
-				$wpdb->prefix . 'bmr_schedules',
+				$wpdb->prefix . 'brm_schedules',
 				$data
 			);
 		}
@@ -271,7 +271,7 @@ class BRM_Admin_Ajax {
 	 * Delete schedule
 	 */
 	public function delete_schedule() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );
@@ -286,7 +286,7 @@ class BRM_Admin_Ajax {
 		global $wpdb;
 
 		$wpdb->delete(
-			$wpdb->prefix . 'bmr_schedules',
+			$wpdb->prefix . 'brm_schedules',
 			array( 'id' => $schedule_id )
 		);
 
@@ -297,7 +297,7 @@ class BRM_Admin_Ajax {
 	 * Test storage connection
 	 */
 	public function test_storage() {
-		check_ajax_referer( 'bmr_ajax', 'nonce' );
+		check_ajax_referer( 'brm_ajax', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Unauthorized', 'backup-restore-migrate' ) );

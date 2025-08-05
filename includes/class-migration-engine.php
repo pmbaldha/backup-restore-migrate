@@ -129,7 +129,7 @@ class BRM_Migration_Engine
 		);
 
 		// Save clone data
-		update_option('bmr_clone_data_' . $backup_result['backup_id'], $clone_data);
+		update_option('brm_clone_data_' . $backup_result['backup_id'], $clone_data);
 
 		return array(
 			'success' => true,
@@ -146,7 +146,7 @@ class BRM_Migration_Engine
 	{
 		$token = wp_generate_password(32, false);
 
-		set_transient('bmr_migration_token_' . $backup_id, $token, DAY_IN_SECONDS * 7);
+		set_transient('brm_migration_token_' . $backup_id, $token, DAY_IN_SECONDS * 7);
 
 		return $token;
 	}
@@ -156,7 +156,7 @@ class BRM_Migration_Engine
 	 */
 	private function verify_migration_token($backup_id, $token)
 	{
-		$stored_token = get_transient('bmr_migration_token_' . $backup_id);
+		$stored_token = get_transient('brm_migration_token_' . $backup_id);
 
 		return $stored_token && $stored_token === $token;
 	}
@@ -184,7 +184,7 @@ class BRM_Migration_Engine
 		$this->update_cron_jobs();
 
 		// Trigger migration complete action
-		do_action('bmr_migration_complete', $options);
+		do_action('brm_migration_complete', $options);
 	}
 
 	/**
@@ -269,7 +269,7 @@ class BRM_Migration_Engine
 		wp_schedule_event(time(), 'daily', 'wp_scheduled_delete');
 
 		// Re-schedule plugin cron jobs
-		do_action('bmr_reschedule_cron_jobs');
+		do_action('brm_reschedule_cron_jobs');
 	}
 
 	/**

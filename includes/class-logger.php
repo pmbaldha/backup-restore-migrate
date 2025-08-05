@@ -18,7 +18,7 @@ class BRM_Logger {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->debug_enabled = get_option( 'wpbm_enable_debug_log', false );
+		$this->debug_enabled = get_option( 'brm_enable_debug_log', false );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class BRM_Logger {
 		global $wpdb;
 
 		$wpdb->insert(
-			$wpdb->prefix . 'wpbm_logs',
+			$wpdb->prefix . 'brm_logs',
 			array(
 				'backup_id' => $this->backup_id,
 				'log_level' => $level,

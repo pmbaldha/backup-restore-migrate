@@ -46,7 +46,7 @@ class BRM_Google_Drive_Storage implements BRM_Storage_Interface {
 		$this->client = new Google_Client();
 		$this->client->setClientId( $this->settings['client_id'] );
 		$this->client->setClientSecret( $this->settings['client_secret'] );
-		$this->client->setRedirectUri( admin_url( 'admin.php?page=bmr-settings&tab=storage&type=google_drive' ) );
+		$this->client->setRedirectUri( admin_url( 'admin.php?page=brm-settings&tab=storage&type=google_drive' ) );
 		$this->client->addScope( Google_Service_Drive::DRIVE_FILE );
 		$this->client->setAccessType( 'offline' );
 		$this->client->setApprovalPrompt( 'force' );
@@ -221,7 +221,7 @@ class BRM_Google_Drive_Storage implements BRM_Storage_Interface {
 
 		if ( isset( $token['refresh_token'] ) ) {
 			$this->settings['refresh_token'] = $token['refresh_token'];
-			update_option( 'bmr_storage_google_drive', $this->settings );
+			update_option( 'brm_storage_google_drive', $this->settings );
 			return true;
 		}
 

@@ -12,7 +12,7 @@ class BRM_Scheduler {
 
 		// Get active schedules due for execution
 		$schedules = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}wpbm_schedules 
+			"SELECT * FROM {$wpdb->prefix}brm_schedules 
 			WHERE is_active = 1 
 			AND next_run <= %s",
 			current_time( 'mysql' )
@@ -28,7 +28,7 @@ class BRM_Scheduler {
 			// Find parent backup for incremental
 			if ( $options['incremental'] ) {
 				$parent = $wpdb->get_var( $wpdb->prepare(
-					"SELECT id FROM {$wpdb->prefix}wpbm_backups 
+					"SELECT id FROM {$wpdb->prefix}brm_backups 
 					WHERE status = 'completed' 
 					AND backup_type = %s 
 					ORDER BY created_at DESC 
@@ -49,7 +49,7 @@ class BRM_Scheduler {
 			// Update schedule
 			$next_run = self::calculate_next_run( $schedule->frequency );
 			$wpdb->update(
-				$wpdb->prefix . 'wpbm_schedules',
+				$wpdb->prefix . 'brm_schedules',
 				array(
 					'last_run' => current_time( 'mysql' ),
 					'next_run' => $next_run,
@@ -87,7 +87,7 @@ class BRM_Scheduler {
 
 		// Get backups for this schedule
 		$backups = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}wpbm_backups 
+			"SELECT * FROM {$wpdb->prefix}brm_backups 
 			WHERE backup_type = %s 
 			AND status = 'completed' 
 			ORDER BY created_at DESC",
@@ -116,7 +116,7 @@ class BRM_Scheduler {
 
 				// Delete database record
 				$wpdb->delete(
-					$wpdb->prefix . 'wpbm_backups',
+					$wpdb->prefix . 'brm_backups',
 					array( 'id' => $backup->id )
 				);
 			}
@@ -129,12 +129,12 @@ class BRM_Scheduler {
 	public static function cleanup_old_backups() {
 		global $wpdb;
 
-		$retention_days = get_option( 'wpbm_retain_local_backups', 5 );
+		$retention_days = get_option( 'brm_retain_local_backups', 5 );
 		$cutoff_date = date( 'Y-m-d H:i:s', strtotime( "-{$retention_days} days" ) );
 
 		// Get old backups
 		$old_backups = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}wpbm_backups 
+			"SELECT * FROM {$wpdb->prefix}brm_backups 
 			WHERE created_at < %s 
 			AND status = 'completed'",
 			$cutoff_date
@@ -153,13 +153,13 @@ class BRM_Scheduler {
 				if ( empty( $locations ) ) {
 					// Delete record if no remote copies
 					$wpdb->delete(
-						$wpdb->prefix . 'wpbm_backups',
+						$wpdb->prefix . 'brm_backups',
 						array( 'id' => $backup->id )
 					);
 				} else {
 					// Update location
 					$wpdb->update(
-						$wpdb->prefix . 'wpbm_backups',
+						$wpdb->prefix . 'brm_backups',
 						array( 'backup_location' => wp_json_encode( $locations ) ),
 						array( 'id' => $backup->id )
 					);
@@ -169,7 +169,7 @@ class BRM_Scheduler {
 
 		// Clean up old logs
 		$wpdb->query( $wpdb->prepare(
-			"DELETE FROM {$wpdb->prefix}wpbm_logs WHERE created_at < %s",
+			"DELETE FROM {$wpdb->prefix}brm_logs WHERE created_at < %s",
 			$cutoff_date
 		) );
 	}
