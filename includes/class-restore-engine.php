@@ -3,7 +3,7 @@
 /**
  * Restore engine class
  */
-class BMR_Restore_Engine {
+class BRM_Restore_Engine {
 
 	/**
 	 * Logger instance
@@ -28,7 +28,7 @@ class BMR_Restore_Engine {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->logger = new BMR_Logger();
+		$this->logger = new BRM_Logger();
 		$this->restore_id = uniqid( 'restore_' );
 	}
 
@@ -152,7 +152,7 @@ class BMR_Restore_Engine {
 			}
 
 			try {
-				$storage = BMR_Storage_Factory::create( $type );
+				$storage = BRM_Storage_Factory::create( $type );
 				if ( $storage && $storage->download( $location, $local_path ) ) {
 					return $local_path;
 				}
@@ -214,7 +214,7 @@ class BMR_Restore_Engine {
 	 * Create restore point
 	 */
 	private function create_restore_point() {
-		$backup_engine = new BMR_Backup_Engine( array(
+		$backup_engine = new BRM_Backup_Engine( array(
 			'backup_type' => 'full',
 			'storage_destinations' => array( 'local' ),
 		) );

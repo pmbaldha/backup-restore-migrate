@@ -2,7 +2,7 @@
 /**
  * S3 storage handler (Amazon S3 and S3-compatible)
  */
-class BMR_S3_Storage implements BMR_Storage_Interface {
+class BRM_S3_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings
@@ -45,7 +45,7 @@ class BMR_S3_Storage implements BMR_Storage_Interface {
 		// Load AWS SDK if available
 		if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
 			// For this example, we'll use a simple S3 implementation
-			require_once BMR_PLUGIN_DIR . 'includes/libs/simple-s3.php';
+			require_once BRM_PLUGIN_DIR . 'includes/libs/simple-s3.php';
 		}
 	}
 

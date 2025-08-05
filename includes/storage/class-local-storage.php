@@ -2,7 +2,7 @@
 /**
  * Local storage handler
  */
-class BMR_Local_Storage implements BMR_Storage_Interface {
+class BRM_Local_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings

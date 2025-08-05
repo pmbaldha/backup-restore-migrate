@@ -2,7 +2,7 @@
 /**
  * Logger class
  */
-class BMR_Logger {
+class BRM_Logger {
 
 	/**
 	 * Backup ID

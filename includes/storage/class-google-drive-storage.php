@@ -2,7 +2,7 @@
 /**
  * Google Drive storage handler
  */
-class BMR_Google_Drive_Storage implements BMR_Storage_Interface {
+class BRM_Google_Drive_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings
@@ -31,7 +31,7 @@ class BMR_Google_Drive_Storage implements BMR_Storage_Interface {
 		) );
 
 		if ( ! class_exists( 'Google_Client' ) ) {
-			require_once BMR_PLUGIN_DIR . 'includes/libs/google-api-php-client/autoload.php';
+			require_once BRM_PLUGIN_DIR . 'includes/libs/google-api-php-client/autoload.php';
 		}
 	}
 

@@ -2,7 +2,7 @@
 /**
  * Storage interface
  */
-interface BMR_Storage_Interface {
+interface BRM_Storage_Interface {
 
 	/**
 	 * Upload file to storage

@@ -2,7 +2,7 @@
 /**
  * SFTP storage handler
  */
-class BMR_SFTP_Storage implements BMR_Storage_Interface {
+class BRM_SFTP_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings

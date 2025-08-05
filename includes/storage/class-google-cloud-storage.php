@@ -2,7 +2,7 @@
 /**
  * Google Cloud Storage handler
  */
-class BMR_Google_Cloud_Storage implements BMR_Storage_Interface {
+class BRM_Google_Cloud_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings

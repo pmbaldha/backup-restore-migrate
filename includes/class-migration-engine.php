@@ -3,7 +3,7 @@
 /**
  * Migration engine class
  */
-class BMR_Migration_Engine
+class BRM_Migration_Engine
 {
 
 	/**
@@ -16,7 +16,7 @@ class BMR_Migration_Engine
 	 */
 	public function __construct()
 	{
-		$this->logger = new BMR_Logger();
+		$this->logger = new BRM_Logger();
 	}
 
 	/**
@@ -41,7 +41,7 @@ class BMR_Migration_Engine
 			'migration_options' => $options,
 		);
 
-		$backup_engine = new BMR_Backup_Engine($backup_options);
+		$backup_engine = new BRM_Backup_Engine($backup_options);
 		$result = $backup_engine->create_backup();
 
 		if ($result['success']) {
@@ -81,7 +81,7 @@ class BMR_Migration_Engine
 		));
 
 		// Perform restore with migration options
-		$restore_engine = new BMR_Restore_Engine();
+		$restore_engine = new BRM_Restore_Engine();
 		$result = $restore_engine->restore_backup($backup_id, $options);
 
 		if ($result['success']) {

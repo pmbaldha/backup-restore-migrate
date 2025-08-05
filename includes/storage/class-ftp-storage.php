@@ -2,7 +2,7 @@
 /**
  * FTP storage handler
  */
-class BMR_FTP_Storage implements BMR_Storage_Interface {
+class BRM_FTP_Storage implements BRM_Storage_Interface {
 
 	/**
 	 * Storage settings

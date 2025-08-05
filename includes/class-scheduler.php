@@ -2,7 +2,7 @@
 /**
  * Scheduler class
  */
-class BMR_Scheduler {
+class BRM_Scheduler {
 
 	/**
 	 * Run scheduled backups
@@ -43,7 +43,7 @@ class BMR_Scheduler {
 				}
 			}
 
-			$backup_engine = new BMR_Backup_Engine( $options );
+			$backup_engine = new BRM_Backup_Engine( $options );
 			$result = $backup_engine->create_backup();
 
 			// Update schedule
@@ -104,7 +104,7 @@ class BMR_Scheduler {
 
 				foreach ( $locations as $type => $location ) {
 					try {
-						$storage = BMR_Storage_Factory::create( $type );
+						$storage = BRM_Storage_Factory::create( $type );
 						if ( $storage ) {
 							$storage->delete( $location );
 						}
